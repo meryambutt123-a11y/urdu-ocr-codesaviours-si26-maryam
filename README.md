@@ -51,3 +51,27 @@ Transitioned the dataset into the machine learning phase by building a custom Py
 * **Tensor Conversion & Normalization:** Converting raw PIL images into standardized mathematical PyTorch Tensors. 
 
 The data pipeline is now fully integrated, allowing the dataset to be loaded directly into a neural network architecture for training.
+
+---
+
+##  Week 2: Computer Vision Preprocessing & Baseline Evaluation
+
+### Phase Overview
+Raw image datasets contain inconsistencies in lighting, dimensions, and noise. The primary objective of this phase is to engineer an automated computer vision pipeline that standardizes the Urdu text images before feeding them into any deep learning architecture. 
+
+Additionally, this phase establishes a baseline accuracy metric by evaluating an off-the-shelf OCR engine (Tesseract) against the complexities of cursive Nastaliq script.
+
+###  Tech Stack & Libraries
+* **OpenCV (`cv2`):** Core library for image transformations and matrix operations.
+* **Pillow (`PIL`):** Utilized for high-level image file handling.
+* **PyTesseract:** Python wrapper for the Tesseract OCR engine.
+
+###  The Preprocessing Pipeline
+To standardize the dataset, every raw image is passed through a custom sequential pipeline:
+1. **Grayscale Conversion:** Eliminates color channel noise (`cv2.cvtColor`).
+2. **Dimensional Standardization:** Resizes all images to a fixed 512x128 resolution (`cv2.resize`).
+3. **Advanced Denoising:** Applies Non-Local Means Denoising to smooth artifacts (`cv2.fastNlMeansDenoising`).
+4. **Binarization:** Converts pixels to pure black or white for maximum contrast (`cv2.threshold`).
+
+###  Why We Need a Better Model (Gap Analysis)
+*(Note: This section is currently under development and will be updated following the baseline Tesseract evaluation later this week.)*
