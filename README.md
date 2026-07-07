@@ -54,24 +54,43 @@ The data pipeline is now fully integrated, allowing the dataset to be loaded dir
 
 ---
 
-##  Week 2: Computer Vision Preprocessing & Baseline Evaluation
+## Week 2: Computer Vision Preprocessing & Baseline Evaluation
 
 ### Phase Overview
 Raw image datasets contain inconsistencies in lighting, dimensions, and noise. The primary objective of this phase is to engineer an automated computer vision pipeline that standardizes the Urdu text images before feeding them into any deep learning architecture. 
 
 Additionally, this phase establishes a baseline accuracy metric by evaluating an off-the-shelf OCR engine (Tesseract) against the complexities of cursive Nastaliq script.
 
-###  Tech Stack & Libraries
+### Tech Stack & Libraries
 * **OpenCV (`cv2`):** Core library for image transformations and matrix operations.
 * **Pillow (`PIL`):** Utilized for high-level image file handling.
 * **PyTesseract:** Python wrapper for the Tesseract OCR engine.
 
-###  The Preprocessing Pipeline
-To standardize the dataset, every raw image is passed through a custom sequential pipeline:
-1. **Grayscale Conversion:** Eliminates color channel noise (`cv2.cvtColor`).
-2. **Dimensional Standardization:** Resizes all images to a fixed 512x128 resolution (`cv2.resize`).
-3. **Advanced Denoising:** Applies Non-Local Means Denoising to smooth artifacts (`cv2.fastNlMeansDenoising`).
-4. **Binarization:** Converts pixels to pure black or white for maximum contrast (`cv2.threshold`).
+### Preprocessing Pipeline Implementation
 
-###  Why We Need a Better Model (Gap Analysis)
-*(Note: This section is currently under development and will be updated following the baseline Tesseract evaluation later this week.)*
+#### Code Architecture
+The core image processing pipeline has been successfully engineered in Python using OpenCV (`cv2`). The function `preprocess_image` standardizes input tensor dimensions, neutralizes chromatic noise, and enhances text boundaries for subsequent sequence analysis.
+
+```python
+def preprocess_image(image_path, save_path):
+    # Load the raw image using OpenCV
+    img = cv2.imread(image_path)
+    if img is None:
+        print(f'Could not load: {image_path}')
+        return None
+    
+    # Step 1: Convert to grayscale (removes RGB color noise)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+    # Step 2: Resize to uniform dimensions (crucial for neural network inputs)
+    resized = cv2.resize(gray, (512, 128))
+    
+    # Step 3: Non-Local Means Denoising (smooths out pixel artifacts)
+    denoised = cv2.fastNlMeansDenoising(resized, h=10)
+    
+    # Step 4: Binarize (converts to pure black and white via absolute thresholding)
+    _, binary = cv2.threshold(denoised, 127, 255, cv2.THRESH_BINARY)
+    
+    # Save the processed image into the output folder
+    cv2.imwrite(save_path, binary)
+    return binary
