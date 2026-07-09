@@ -5,8 +5,7 @@ This repository contains the setup, research, and data collection for Week 1 of 
 
 ---
 
-## Part 1: Project Research Summary
-*(Completed - Day 1)*
+## Week 1, Monday Update: Project Research Summary
 
 **1. What is OCR (Optical Character Recognition)?**
 Optical Character Recognition (OCR) is a computer vision technology that converts images of typed, handwritten, or printed text into machine-readable digital text. Instead of simply viewing a document as a static picture, an OCR system acts like a human eye to recognize the unique shapes of individual letters and words. Once the text is successfully extracted, computers can process it just like a standard text file, allowing users to edit the content, search for keywords, or feed the data into other artificial intelligence models.
@@ -20,8 +19,7 @@ Urdu OCR presents significant technical challenges primarily because it is writt
 
 ---
 
-## Part 2: Data Collection & Organization
-*(Completed - Day 2)*
+## Week 1, Tuesday Update: Data Collection & Organization
 
 Successfully collected a balanced dataset of over 100 Urdu text images to train the model, treating the data like flashcards for the neural network. The images are systematically organized into the following required directory structure:
 
@@ -33,8 +31,7 @@ Successfully collected a balanced dataset of over 100 Urdu text images to train 
 
 ---
 
-## Part 3: Data Engineering & PyTorch Pipeline
-*(Completed - Day 3)*
+## Week 1, Wednesday Update: Data Engineering & PyTorch Pipeline
 
 To prepare the raw images for machine learning, the dataset required strict standardization, ground truth labeling, and a mathematically robust loading pipeline.
 
@@ -56,20 +53,20 @@ The data pipeline is now fully integrated, allowing the dataset to be loaded dir
 
 ## Week 2: Computer Vision Preprocessing & Baseline Evaluation
 
-### Phase Overview
+### Week 2, Monday Update: Phase Overview & Environment Setup
 Raw image datasets contain inconsistencies in lighting, dimensions, and noise. The primary objective of this phase is to engineer an automated computer vision pipeline that standardizes the Urdu text images before feeding them into any deep learning architecture. 
 
 Additionally, this phase establishes a baseline accuracy metric by evaluating an off-the-shelf OCR engine (Tesseract) against the complexities of cursive Nastaliq script.
 
-### Tech Stack & Libraries
+**Tech Stack & Libraries**
 * **OpenCV (`cv2`):** Core library for image transformations and matrix operations.
 * **Pillow (`PIL`):** Utilized for high-level image file handling.
 * **PyTesseract:** Python wrapper for the Tesseract OCR engine.
 
-### Preprocessing Pipeline Implementation
+---
 
-#### Code Architecture
-The core image processing pipeline has been successfully engineered in Python using OpenCV (`cv2`). The function `preprocess_image` standardizes input tensor dimensions, neutralizes chromatic noise, and enhances text boundaries for subsequent sequence analysis.
+### Week 2, Tuesday Update: Preprocessing Pipeline Implementation
+The core image processing pipeline was initially engineered in Python using OpenCV (`cv2`) to standardize input tensor dimensions, neutralize chromatic noise, and enhance text boundaries for subsequent sequence analysis.
 
 ```python
 def preprocess_image(image_path, save_path):
@@ -90,7 +87,19 @@ def preprocess_image(image_path, save_path):
     
     # Step 4: Binarize (converts to pure black and white via absolute thresholding)
     _, binary = cv2.threshold(denoised, 127, 255, cv2.THRESH_BINARY)
-    
+
+--
+
+### Week 2, Wednesday Update: Automated Batch Processing & Algorithm Optimization
+
+**Dataset Standardization**
+The core OpenCV preprocessing pipeline was applied to the entire collected dataset. A batch processing script was engineered using Python's `glob` and `os` modules to recursively locate and transform all raw image assets.
+* **Input:** 139 raw images of varying dimensions, lighting conditions, and formats across 5 distinct subdirectories.
+* **Output:** 139 uniform (512x128), grayscale, denoised, and binarized image tensors successfully saved to the `data/processed/` directory.
+* **Efficiency:** The automated loop ensures zero data loss and prepares the exact ground truth mapping required for the neural network training phase.
+
+**Algorithm Optimization: Otsu's Binarization**
+Initial batch processing revealed that a static binarization threshold (127) degraded the structural integrity of low-contrast source material (e.g., scanned literature). The preprocessing function was refactored to implement Otsu's Thresholding (`cv2.THRESH_OTSU`), which dynamically calculates the optimal contrast threshold per image based on its unique pixel histogram. Additionally, the non-local means denoising weight was reduced to preserve the delicate strokes and nuqtas characteristic of Nastaliq script.
     # Save the processed image into the output folder
     cv2.imwrite(save_path, binary)
     return binary
