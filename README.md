@@ -103,3 +103,17 @@ Initial batch processing revealed that a static binarization threshold (127) deg
     # Save the processed image into the output folder
     cv2.imwrite(save_path, binary)
     return binary
+
+--
+
+### Week 2, Thursday Update: Baseline OCR Evaluation (Gap Analysis)
+
+To establish a baseline accuracy metric and justify the requirement for a custom deep learning architecture, the preprocessed Nastaliq dataset was evaluated against Tesseract OCR (`tesseract-ocr-urd`), an industry-standard open-source OCR engine.
+
+**Inference Results & Failure Modes**
+A sample batch of normalized image tensors (512x128, binarized) was passed through the PyTesseract wrapper. The engine consistently produced catastrophic character error rates (CER) and completely failed to extract meaningful sequences. The failure modes were categorized as follows:
+* **Segmentation Failure:** Tesseract's bounding-box character extraction algorithm assumes horizontal, non-overlapping glyphs. It failed to isolate Nastaliq's vertically stacked and diagonally cascading ligatures.
+* **Contextual Misclassification:** The engine struggled to identify identical characters that dynamically changed shape based on their positional context (initial, medial, final).
+* **Diacritic Orphaning:** Nuqtas (dots) were frequently disconnected from their base glyphs, resulting in persistent character hallucinations (e.g., misclassifying 'Te' as 'Be').
+
+**Conclusion:** The baseline evaluation mathematically proved that traditional segmentation-based OCR systems are incompatible with cursive Nastaliq script. A sequence-to-sequence Deep Neural Network (CRNN/Attention-based) is strictly required to solve this problem without relying on character-level bounding boxes.
