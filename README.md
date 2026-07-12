@@ -21,13 +21,13 @@ Urdu OCR presents significant technical challenges primarily because it is writt
 
 ## Week 1, Tuesday Update: Data Collection & Organization
 
-Successfully collected a balanced dataset of over 100 Urdu text images to train the model, treating the data like flashcards for the neural network. The images are systematically organized into the following required directory structure:
+Successfully collected a balanced dataset of 139 Urdu text images to train the model, treating the data like flashcards for the neural network. The images are systematically organized into the following required directory structure:
 
 * `data/raw/newspaper` - Populated with 20 screenshots of headlines and article lines from Pakistani news websites.
 * `data/raw/books` - Populated with 40 pristine, single-line printed sentences from Urdu literature.
 * `data/raw/signboards` - Populated with 30 isolated real-world tokens and location names.
-* `data/raw/synthetic` - Setup for script-generated baseline images.
-* `data/raw/other` - Populated with 30 noisy digital/video text lines to act as a stress test for the model.
+* `data/raw/synthetic` - Populated with 20 script-generated baseline images using the NotoNastaliqUrdu font.
+* `data/raw/other` - Populated with 29 noisy digital/video text lines to act as a stress test for the model.
 
 ---
 
@@ -88,7 +88,12 @@ def preprocess_image(image_path, save_path):
     # Step 4: Binarize (converts to pure black and white via absolute thresholding)
     _, binary = cv2.threshold(denoised, 127, 255, cv2.THRESH_BINARY)
 
---
+    # Save the processed image into the output folder
+    cv2.imwrite(save_path, binary)
+    return binary
+```
+
+---
 
 ### Week 2, Wednesday Update: Automated Batch Processing & Algorithm Optimization
 
@@ -100,11 +105,8 @@ The core OpenCV preprocessing pipeline was applied to the entire collected datas
 
 **Algorithm Optimization: Otsu's Binarization**
 Initial batch processing revealed that a static binarization threshold (127) degraded the structural integrity of low-contrast source material (e.g., scanned literature). The preprocessing function was refactored to implement Otsu's Thresholding (`cv2.THRESH_OTSU`), which dynamically calculates the optimal contrast threshold per image based on its unique pixel histogram. Additionally, the non-local means denoising weight was reduced to preserve the delicate strokes and nuqtas characteristic of Nastaliq script.
-    # Save the processed image into the output folder
-    cv2.imwrite(save_path, binary)
-    return binary
 
---
+---
 
 ### Week 2, Thursday Update: Baseline OCR Evaluation (Gap Analysis)
 
@@ -117,3 +119,16 @@ A sample batch of normalized image tensors (512x128, binarized) was passed throu
 * **Diacritic Orphaning:** Nuqtas (dots) were frequently disconnected from their base glyphs, resulting in persistent character hallucinations (e.g., misclassifying 'Te' as 'Be').
 
 **Conclusion:** The baseline evaluation mathematically proved that traditional segmentation-based OCR systems are incompatible with cursive Nastaliq script. A sequence-to-sequence Deep Neural Network (CRNN/Attention-based) is strictly required to solve this problem without relying on character-level bounding boxes.
+
+---
+
+### Week 2, Friday Update: Proposed Custom Architecture Blueprint
+
+Based on the catastrophic failure of standard segmentation-based OCR, the project will pivot to developing a custom end-to-end Deep Learning architecture capable of sequence-to-sequence translation without character-level bounding boxes. 
+
+The proposed architecture for Week 3 is a **Convolutional Recurrent Neural Network (CRNN) utilizing CTC Loss**.
+
+**Architectural Components:**
+1. **Feature Extraction (CNN):** A Convolutional Neural Network (utilizing a ResNet backbone) will ingest the standardized 512x128 grayscale tensors to extract spatial feature maps, capturing the intricate strokes and nuqta placements of Nastaliq script.
+2. **Sequence Modeling (Bi-LSTM):** A Bidirectional Long Short-Term Memory network will process the CNN feature maps as a sequential time-series. This allows the model to understand the contextual dependencies of connected ligatures from both left-to-right and right-to-left perspectives.
+3. **Alignment & Decoding (CTC Loss):** Connectionist Temporal Classification (CTC) Loss will be implemented to calculate the error between the model's predicted sequence and the ground truth labels. CTC is critical for this project as it dynamically aligns the unsegmented input image features with the output text, entirely bypassing the need for manual character localization.
