@@ -132,3 +132,12 @@ The proposed architecture for Week 3 is a **Convolutional Recurrent Neural Netwo
 1. **Feature Extraction (CNN):** A Convolutional Neural Network (utilizing a ResNet backbone) will ingest the standardized 512x128 grayscale tensors to extract spatial feature maps, capturing the intricate strokes and nuqta placements of Nastaliq script.
 2. **Sequence Modeling (Bi-LSTM):** A Bidirectional Long Short-Term Memory network will process the CNN feature maps as a sequential time-series. This allows the model to understand the contextual dependencies of connected ligatures from both left-to-right and right-to-left perspectives.
 3. **Alignment & Decoding (CTC Loss):** Connectionist Temporal Classification (CTC) Loss will be implemented to calculate the error between the model's predicted sequence and the ground truth labels. CTC is critical for this project as it dynamically aligns the unsegmented input image features with the output text, entirely bypassing the need for manual character localization.
+
+---
+
+### Week 3, Monday Update:
+
+**1. Data Collection & Synthetic Generation**
+* **Handwritten (`data/raw/other/`):** Captured 15 clean, single-line images of handwritten Urdu text, focusing on relatable and humorous everyday sentences to introduce natural human stroke variance.
+* **Real-World Captures:** Sourced an additional 36 images across three categories: 15 digital newspaper headlines, 10 printed book sequences, and 11 real-world physical signboards.
+* **Synthetic Data (`data/raw/synthetic/`):** Engineered a Python generation script using the `Pillow`, `arabic-reshaper`, and `python-bidi` libraries to programmatically render 10 new right-to-left (RTL) baseline images on 900x150 pixel canvases.
