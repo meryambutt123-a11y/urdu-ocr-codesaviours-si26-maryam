@@ -141,3 +141,34 @@ The proposed architecture for Week 3 is a **Convolutional Recurrent Neural Netwo
 * **Handwritten (`data/raw/other/`):** Captured 15 clean, single-line images of handwritten Urdu text, focusing on relatable and humorous everyday sentences to introduce natural human stroke variance.
 * **Real-World Captures:** Sourced an additional 36 images across three categories: 15 digital newspaper headlines, 10 printed book sequences, and 11 real-world physical signboards.
 * **Synthetic Data (`data/raw/synthetic/`):** Engineered a Python generation script using the `Pillow`, `arabic-reshaper`, and `python-bidi` libraries to programmatically render 10 new right-to-left (RTL) baseline images on 900x150 pixel canvases.
+
+#### Tuesday: Dataset Expansion & Preprocessing
+* **Action:** Expanded the dataset from 139 to 200+ images to improve model robustness.
+* **Focus:** Increased diversity by incorporating varied fonts (Nastaliq, Naskh), lighting conditions, and real-world noise.
+* **Result:** Updated labels.csv to map all new image entries to their respective Urdu text labels.
+
+#### Wednesday: Environment Troubleshooting & Architecture
+* **Action:** Resolved persistent environment dependency conflicts in Google Colab related to Hugging Face transformers and tokenizer backends.
+* **Focus:** Successfully integrated TrOCRProcessor and bypassed caching issues to ensure a stable, production-ready development environment.
+
+#### Thursday: Designing the UrduOCRDataset Class
+* **Action:** Architected a refined UrduOCRDataset class to handle end-to-end image-label processing.
+* **Technical Implementation:**
+    * Implemented `__getitem__` to dynamically process images via TrOCRProcessor.
+    * Configured label encoding with padding to a maximum sequence length of 128.
+    * Ensured compatibility with PyTorch DataLoader for efficient batch processing.
+
+#### Friday: Dataset Verification & Validation
+* **Action:** Conducted final validation tests on the pipeline to ensure data integrity.
+* **Validation Metrics:**
+    * **Shapes:** Verified pixel_values as [3, 384, 384] and labels as [128].
+    * **Split:** Executed a 160/40 (80/20) train-test split to ensure statistical robustness.
+* **Result:** The pipeline is now fully verified and prepared for model training in Week 4.
+
+---
+
+### 🛠 Tools & Libraries Used
+* **ML Frameworks:** PyTorch, Hugging Face Transformers.
+* **Computer Vision:** OpenCV, Pillow (PIL).
+* **Data Handling:** Pandas, NumPy, OS.
+* **Platforms:** Google Colab, GitHub.
