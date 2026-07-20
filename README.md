@@ -172,3 +172,34 @@ The proposed architecture for Week 3 is a **Convolutional Recurrent Neural Netwo
 * **Computer Vision:** OpenCV, Pillow (PIL).
 * **Data Handling:** Pandas, NumPy, OS.
 * **Platforms:** Google Colab, GitHub.
+
+---
+
+### Week 4, Monday Update: Pipeline Debugging & Comprehensive Pipeline Execution
+
+By resolving critical data-path bugs and successfully running the deep learning pipeline, the scheduled objectives for Monday, Tuesday, Wednesday, and Friday were completely fulfilled ahead of schedule in a single high-efficiency development session.
+
+#### Monday & Tuesday: Dataset Pathing Optimization & DataLoader Setup
+* **Action:** Resolved a critical `FileNotFoundError` caused by legacy path assumptions in the master `labels.csv` file and configured training parameters.
+* **Technical Implementation:** 
+    * Refactored the `UrduOCRDataset` class to completely bypass the missing `data/processed/` directory. 
+    * Updated the code to map relative file paths directly from the project root (`PROJECT_ROOT`), allowing the pipeline to pull directly from the unedited `data/raw/` directories.
+    * Initialized PyTorch `DataLoader` instances with a batch size of 4 to stream images to the GPU efficiently.
+    * Instantiated the native `torch.optim.AdamW` optimizer with a fine-tuning learning rate of `5e-5`.
+* **Result:** Successfully validated and loaded 199 high-quality raw Urdu samples, splitting them dynamically into an 80/20 ratio: **159 training samples** and **40 isolated testing samples**.
+
+#### Wednesday: Baseline Training Loop Execution
+* **Action:** Initialized and executed the core fine-tuning sequence for the sequence-to-sequence TrOCR architecture.
+* **Technical Implementation:** Ran a native PyTorch training loop over 3 complete epochs using backpropagation to update the model weights against the complex structural layouts of raw Urdu text images.
+* **Result:** The network successfully demonstrated mathematical convergence. The training loss decreased steadily across the epochs, dropping from an initial batch high of **17.2922** down to an average final epoch loss of **3.5272**.
+
+#### Thursday: Preliminary Inference & Early Error Analysis
+* **Action:** Switched the baseline model to evaluation mode (`model.eval()`) and generated text predictions using a beam search decoding configuration on unseen data from the test split.
+* **Focus:** Conducted live inference testing to establish a performance baseline on raw data.
+* **Result & Observation:** The initial 3-epoch baseline model generated partial Urdu ligatures intermixed with unrecognized padding symbols (replacement characters / ``). 
+* **Conclusion:** While the steep reduction in loss proves the network architecture is successfully learning the overarching structural task, 3 epochs are mathematically insufficient for the model to lock in the complex character mappings of the Nastaliq script from scratch. This gap dictates the next phase of the project: extending the training phase for an additional 5-10 epochs and implementing advanced decoding strategies (e.g., `num_beams=4`) during inference generation.
+
+#### Friday: Proactive Model Archiving
+* **Action:** Secured the model's updated parameters immediately following the completion of the training loop to ensure session persistence.
+* **Technical Implementation:** Executed a permanent save using `.save_pretrained()` to write both the structural weights and the specialized image tokenizers to Google Drive to prevent data loss upon session termination.
+* **Result:** Saved the fine-tuned model weights and processor state securely to `/content/drive/MyDrive/Urdu_OCR_Project/models/trocr_urdu_raw_baseline`.
