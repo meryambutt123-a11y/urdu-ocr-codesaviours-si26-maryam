@@ -203,3 +203,20 @@ By resolving critical data-path bugs and successfully running the deep learning 
 * **Action:** Secured the model's updated parameters immediately following the completion of the training loop to ensure session persistence.
 * **Technical Implementation:** Executed a permanent save using `.save_pretrained()` to write both the structural weights and the specialized image tokenizers to Google Drive to prevent data loss upon session termination.
 * **Result:** Saved the fine-tuned model weights and processor state securely to `/content/drive/MyDrive/Urdu_OCR_Project/models/trocr_urdu_raw_baseline`.
+
+## Week 5: Web Deployment & Application Hosting
+
+For the final phase of the Code Saviours internship (Week 5), the objective was to take our trained/evaluated Urdu OCR model and deploy it as a functional, user-facing web application. 
+
+### Tasks Accomplished:
+* **Web Interface Development:** Built an interactive UI using the `gradio` framework, allowing users to seamlessly upload images of Urdu text and receive real-time extracted string outputs.
+* **Cloud Deployment:** Successfully hosted the application on Hugging Face Spaces. Bypassed direct upload storage limits by configuring the pipeline to pull the `microsoft/trocr-base-printed` baseline model directly from the Hub.
+* **Environment Configuration:** Engineered a streamlined `requirements.txt` file to resolve strict dependency conflicts between PyTorch, Torchvision, and the server-side Gradio build, ensuring a stable container environment.
+* **Version Control:** Migrated the project codebase to GitHub for final submission and documentation.
+
+### Previous Milestones:
+* **Week 4 Accuracy Score:** [Insert your exact CER or accuracy metric here]
+
+### Live Application:
+You can test the live Urdu OCR application here: 
+[Insert your permanent Hugging Face Space URL here]
